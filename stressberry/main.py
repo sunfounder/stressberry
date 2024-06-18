@@ -51,6 +51,7 @@ def measure_core_frequency(filename=None):
 
 
 def measure_ambient_temperature(sensor_type="2302", pin="23"):
+    global dhtDevice
     """Uses Adafruit temperature sensor to measure ambient temperature"""
     if dhtDevice is None:
         try:
