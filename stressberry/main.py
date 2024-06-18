@@ -2,6 +2,7 @@ import subprocess
 import time as tme
 from os import cpu_count
 
+dhtDevice = None
 
 def stress_cpu(num_cpus, time):
     subprocess.check_call(["stress", "--cpu", str(num_cpus), "--timeout", f"{time}s"])
@@ -51,25 +52,26 @@ def measure_core_frequency(filename=None):
 
 def measure_ambient_temperature(sensor_type="2302", pin="23"):
     """Uses Adafruit temperature sensor to measure ambient temperature"""
-    try:
-        import board
-        import adafruit_dht  # Late import so that library is only needed if requested
-    except ImportError as e:
-        print("Install adafruit_dht python module: pip3 install adafruit-circuitpython-dht")
-        raise e
+    if dhtDevice is None:
+        try:
+            import board
+            import adafruit_dht  # Late import so that library is only needed if requested
+        except ImportError as e:
+            print("Install adafruit_dht python module: pip3 install adafruit-circuitpython-dht")
+            raise e
 
-    sensor_map = {
-        "11": adafruit_dht.DHT11,
-        "22": adafruit_dht.DHT22,
-        "2302": adafruit_dht.DHT22,
-    }
-    try:
-        sensor = sensor_map[sensor_type]
-    except KeyError as e:
-        print("Invalid ambient temperature sensor")
-        raise e
-    pin = getattr(board, f"D{pin}")
-    dhtDevice = sensor(pin)
+        sensor_map = {
+            "11": adafruit_dht.DHT11,
+            "22": adafruit_dht.DHT22,
+            "2302": adafruit_dht.DHT22,
+        }
+        try:
+            sensor = sensor_map[sensor_type]
+            pin = getattr(board, f"D{pin}")
+            dhtDevice = sensor(pin)
+        except KeyError as e:
+            print("Invalid ambient temperature sensor")
+            raise e
     temperature = dhtDevice.temperature
     # Note that sometimes you won't get a reading and the results will be null (because
     # Linux can't guarantee the timing of calls to read the sensor).  The read_retry
