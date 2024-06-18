@@ -61,7 +61,7 @@ def measure_ambient_temperature(sensor_type="2302", pin="23"):
     sensor_map = {
         "11": adafruit_dht.DHT11,
         "22": adafruit_dht.DHT22,
-        "2302": adafruit_dht.AM2302,
+        "2302": adafruit_dht.DHT22,
     }
     try:
         sensor = sensor_map[sensor_type]
