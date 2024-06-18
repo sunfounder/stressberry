@@ -52,22 +52,25 @@ def measure_core_frequency(filename=None):
 def measure_ambient_temperature(sensor_type="2302", pin="23"):
     """Uses Adafruit temperature sensor to measure ambient temperature"""
     try:
-        import Adafruit_DHT  # Late import so that library is only needed if requested
+        import board
+        import adafruit_dht  # Late import so that library is only needed if requested
     except ImportError as e:
-        print("Install adafruit_dht python module: pip install Adafruit_DHT")
+        print("Install adafruit_dht python module: pip3 install adafruit-circuitpython-dht")
         raise e
 
     sensor_map = {
-        "11": Adafruit_DHT.DHT11,
-        "22": Adafruit_DHT.DHT22,
-        "2302": Adafruit_DHT.AM2302,
+        "11": adafruit_dht.DHT11,
+        "22": adafruit_dht.DHT22,
+        "2302": adafruit_dht.AM2302,
     }
     try:
         sensor = sensor_map[sensor_type]
     except KeyError as e:
         print("Invalid ambient temperature sensor")
         raise e
-    _, temperature = Adafruit_DHT.read_retry(sensor, pin)
+    pin = getattr(board, f"D{pin}")
+    dhtDevice = sensor(pin)
+    temperature = dhtDevice.temperature
     # Note that sometimes you won't get a reading and the results will be null (because
     # Linux can't guarantee the timing of calls to read the sensor).  The read_retry
     # call will attempt to read the sensor 15 times with a 2 second delay.  Care should
