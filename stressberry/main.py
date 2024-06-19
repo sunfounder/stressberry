@@ -79,8 +79,9 @@ def measure_ambient_temperature(sensor_type="2302", pin="23"):
             break
         except RuntimeError as e:
             print("Failed to read from DHT sensor, retrying...")
-            time.sleep(0.5)
-            raise e
+            time.sleep(0.01)
+    else:
+        raise e
     
     # Note that sometimes you won't get a reading and the results will be null (because
     # Linux can't guarantee the timing of calls to read the sensor).  The read_retry
