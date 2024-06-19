@@ -1,5 +1,5 @@
 import subprocess
-import time as tme
+import time
 from os import cpu_count
 
 dhtDevice = None
@@ -13,7 +13,7 @@ def cooldown(interval=60, filename=None):
     """Lets the CPU cool down until the temperature does not change anymore."""
     prev_tmp = measure_temp(filename=filename)
     while True:
-        tme.sleep(interval)
+        time.sleep(interval)
         tmp = measure_temp(filename=filename)
         print(
             f"Current temperature: {tmp:4.1f}°C - "
@@ -60,7 +60,6 @@ def measure_ambient_temperature(sensor_type="2302", pin="23"):
         except ImportError as e:
             print("Install adafruit_dht python module: pip3 install adafruit-circuitpython-dht")
             raise e
-
         sensor_map = {
             "11": adafruit_dht.DHT11,
             "22": adafruit_dht.DHT22,
@@ -80,6 +79,7 @@ def measure_ambient_temperature(sensor_type="2302", pin="23"):
             break
         except RuntimeError as e:
             print("Failed to read from DHT sensor, retrying...")
+            time.sleep(0.5)
             raise e
     
     # Note that sometimes you won't get a reading and the results will be null (because
@@ -99,9 +99,9 @@ def test(stress_duration, idle_duration, cores):
 
     print(f"Preparing to stress [{cores}] CPU Cores for [{stress_duration}] seconds")
     print(f"Idling for {idle_duration} seconds...")
-    tme.sleep(idle_duration)
+    time.sleep(idle_duration)
 
     stress_cpu(num_cpus=cores, time=stress_duration)
 
     print(f"Idling for {idle_duration} seconds...")
-    tme.sleep(idle_duration)
+    time.sleep(idle_duration)
