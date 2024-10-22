@@ -25,6 +25,7 @@ class DS18B20:
 
     def get_temperature(self, unit='C'):
         lines = self.read_temp_raw()
+        print(lines)
         while lines[0].strip()[-3:] != 'YES':
             time.sleep(0.2)
             lines = self.read_temp_raw()
@@ -41,3 +42,14 @@ class DS18B20:
     @property
     def temperature(self):
         return self.get_temperature()
+
+
+def test():
+    sensor = DS18B20()
+    import time
+    while True:
+        print(sensor.temperature)
+        time.sleep(1)
+
+if __name__ == '__main__':
+    test()
