@@ -52,8 +52,8 @@ No fans, heat sinks, or case. | Your average acrylic case from eBay. | [FastTech
 
 To run stressberry on your computer, simply install it with
 ```bash
-[sudo] apt install stress
-python3 -m pip install stressberry
+sudo apt install stress
+sudo python3 -m pip install --break-system git+http://github.com/sunfounder/stressberry.git
 ```
 Users of [Arch Linux ARM](https://archlinuxarm.org/) can install from the official repos
 ```
@@ -82,6 +82,20 @@ If you'd like to submit your own data for display here, feel free to [open an
 issue](https://github.com/nschloe/stressberry/issues) and include the data file, a
 photograph of your setup, and perhaps some further information.
 
+### Add ambient temperature
+
+Install Adafruit Circuit Python DHT library
+
+```bash
+sudo pip3 install adafruit-circuitpython-dht --break-system
+sudo apt-get install libgpiod2
+```
+
+Add dht sensor to stressberry-run
+
+```bash
+stressberry-run out.dat -a <sensor:11|22|2302> <gpio>
+```
 
 ### Testing
 

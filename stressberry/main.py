@@ -49,8 +49,14 @@ def measure_core_frequency(filename=None):
         frequency = float(out.split("=")[1]) / 1000000
     return frequency
 
+def measure_ds18b20():
+    """Uses DS18B20 temperature sensor to measure ambient temperature"""
+    from ds18b20 import DS18B20
+    sensor = DS18B20()
+    temperature = sensor.read_temp()
+    return temperature
 
-def measure_ambient_temperature(sensor_type="2302", pin="23"):
+def measure_dht(sensor_type, pin):
     global dhtDevice
     """Uses Adafruit temperature sensor to measure ambient temperature"""
     if dhtDevice is None:
@@ -64,6 +70,7 @@ def measure_ambient_temperature(sensor_type="2302", pin="23"):
             "11": adafruit_dht.DHT11,
             "22": adafruit_dht.DHT22,
             "2302": adafruit_dht.DHT22,
+            "ds18b20": DS18B20,
         }
         try:
             sensor = sensor_map[sensor_type]
@@ -82,7 +89,7 @@ def measure_ambient_temperature(sensor_type="2302", pin="23"):
             time.sleep(0.01)
     else:
         raise e
-    
+
     # Note that sometimes you won't get a reading and the results will be null (because
     # Linux can't guarantee the timing of calls to read the sensor).  The read_retry
     # call will attempt to read the sensor 15 times with a 2 second delay.  Care should
@@ -90,6 +97,12 @@ def measure_ambient_temperature(sensor_type="2302", pin="23"):
     # also be None
     return temperature
 
+
+def measure_ambient_temperature(sensor_type="2302", pin="23"):
+    if sensor_type == "ds18b20":
+        return measure_ds18b20()
+    else:
+        return measure_dht(sensor_type, pin)
 
 def test(stress_duration, idle_duration, cores):
     """Run stress test for specified duration with specified idle times
