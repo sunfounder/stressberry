@@ -24,8 +24,14 @@ class DS18B20:
             return f.readlines()
 
     def get_temperature(self, unit='C'):
-        lines = self.read_temp_raw()
-        print(lines)
+        lines = None
+        for _ in range(10):
+            lines = self.read_temp_raw()
+            if len(lines) == 2:
+                break
+            time.sleep(0.2)
+        else:
+            raise Exception('Failed to read temperature')
         while lines[0].strip()[-3:] != 'YES':
             time.sleep(0.2)
             lines = self.read_temp_raw()
