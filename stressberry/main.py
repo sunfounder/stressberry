@@ -53,8 +53,7 @@ def measure_ds18b20():
     """Uses DS18B20 temperature sensor to measure ambient temperature"""
     from .ds18b20 import DS18B20
     sensor = DS18B20()
-    temperature = sensor.read_temp()
-    return temperature
+    return sensor.temperature
 
 def measure_dht(sensor_type, pin):
     global dhtDevice
