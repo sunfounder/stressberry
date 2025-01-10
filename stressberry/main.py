@@ -69,7 +69,6 @@ def measure_dht(sensor_type, pin):
             "11": adafruit_dht.DHT11,
             "22": adafruit_dht.DHT22,
             "2302": adafruit_dht.DHT22,
-            "ds18b20": DS18B20,
         }
         try:
             sensor = sensor_map[sensor_type]
