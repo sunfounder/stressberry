@@ -33,7 +33,6 @@ class DS18B20:
     def get_temperature(self, unit='C'):
         lines = self.read_temp_raw().split('\n')
         if len(lines) < 2:
-            print(f'Read file {self.device_file} failed, read: {lines}.')
             return None
         while lines[0].strip()[-3:] != 'YES':
             time.sleep(0.2)
