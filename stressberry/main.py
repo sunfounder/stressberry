@@ -78,7 +78,7 @@ def measure_dht(sensor_type, pin):
             print("Invalid ambient temperature sensor")
             raise e
 
-        temperature = dhtDevice.temperature
+    temperature = dhtDevice.temperature
 
     # Note that sometimes you won't get a reading and the results will be null (because
     # Linux can't guarantee the timing of calls to read the sensor).  The read_retry
@@ -90,18 +90,10 @@ def measure_dht(sensor_type, pin):
 
 def measure_ambient_temperature(sensor_type="2302", pin="23"):
     temperature = None
-    for _ in range(5):
-        try:
-            if sensor_type == "ds18b20":
-                temperature = measure_ds18b20()
-            else:
-                temperature = measure_dht(sensor_type, pin)
-            break
-        except Exception as e:
-            print(f"Failed to read ambient temperature, retrying... {e}")
-            time.sleep(0.01)
+    if sensor_type == "ds18b20":
+        temperature = measure_ds18b20()
     else:
-        raise e
+        temperature = measure_dht(sensor_type, pin)
     return temperature
 
 def test(stress_duration, idle_duration, cores):

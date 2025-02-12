@@ -1,6 +1,14 @@
 import time
 import glob
+import subprocess
 
+def run_command(command):
+    try:
+        output = subprocess.check_output(command, shell=True, universal_newlines=True)
+        return output.strip()
+    except subprocess.CalledProcessError as e:
+        print(f'Command {command} failed with error code {e.returncode}')
+        return None
 class DS18B20:
     
     BASE_DIR = '/sys/bus/w1/devices/'
@@ -20,18 +28,13 @@ class DS18B20:
         return sensor_ids
 
     def read_temp_raw(self):
-        with open(self.device_file, 'r') as f:
-            return f.readlines()
+        return run_command(f'sudo cat {self.device_file}')
 
     def get_temperature(self, unit='C'):
-        lines = None
-        for _ in range(10):
-            lines = self.read_temp_raw()
-            if len(lines) == 2:
-                break
-            time.sleep(0.2)
-        else:
-            raise Exception('Failed to read temperature')
+        lines = self.read_temp_raw().split('\n')
+        if len(lines) < 2:
+            print(f'Read file {self.device_file} failed, read: {lines}.')
+            return None
         while lines[0].strip()[-3:] != 'YES':
             time.sleep(0.2)
             lines = self.read_temp_raw()
