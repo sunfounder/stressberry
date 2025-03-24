@@ -55,7 +55,7 @@ def measure_ds18b20():
     sensor = DS18B20()
     return sensor.temperature
 
-def measure_dht(sensor_type, pin):
+def measure_dht(sensor_type, pin, times=3):
     global dhtDevice
     """Uses Adafruit temperature sensor to measure ambient temperature"""
     if dhtDevice is None:
@@ -78,15 +78,21 @@ def measure_dht(sensor_type, pin):
             print("Invalid ambient temperature sensor")
             raise e
 
-    temperature = dhtDevice.temperature
-
-    # Note that sometimes you won't get a reading and the results will be null (because
-    # Linux can't guarantee the timing of calls to read the sensor).  The read_retry
-    # call will attempt to read the sensor 15 times with a 2 second delay.  Care should
-    # be taken when reading if on a time sensitive path Temperature is in °C but can
-    # also be None
+    # for _ in times(5):
+    #     try:
+    #         temperature = dhtDevice.temperature
+    #         break
+    #     except RuntimeError as e:
+    #         print("Retrying DHT sensor")
+    #         time.sleep(0.1)
+    # else:
+    #     print("Could not read from DHT sensor")
+    #     temperature = None
+    try:
+        temperature = dhtDevice.temperature
+    except RuntimeError as e:
+        temperature = None
     return temperature
-
 
 def measure_ambient_temperature(sensor_type="2302", pin="23"):
     temperature = None
